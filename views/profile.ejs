@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .profile-card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 300px;
+      text-align: center;
+    }
+
+    .profile-card h2 {
+      margin-top: 0;
+      color: #0073e6;
+    }
+
+    .profile-card p {
+      margin: 10px 0;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-card">
+    <h2>User Profile</h2>
+    <p><strong>Username:</strong> <%= username %></p>
+    <p><strong>Name:</strong> <%= name %></p>
+    <p><strong>Age:</strong> <%= age %></p>
+    <p><strong>Phone Number:</strong> <%= phone_number %></p>
+    <p><strong>Email Address:</strong> <%= email_address %></p>
+    <p><strong>Role:</strong> <%= roleName %></p>
+  </div>
+</body>
+</html>

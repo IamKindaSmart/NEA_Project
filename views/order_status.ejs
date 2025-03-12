@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Status</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #0073e6;
+            color: white;
+            padding: 10px 20px;
+            animation: slideInDown 1s ease-in-out;
+        }
+
+        .navbar h1 {
+            margin: 0;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            background-color: #005bb5;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .navbar a:hover {
+            background-color: #003f7f;
+        }
+
+        .container {
+            padding: 20px;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        h2 {
+            text-align: center;
+            color: #0073e6;
+            animation: fadeInUp 1s ease-in-out;
+        }
+
+        table {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            border-collapse: collapse;
+            margin-top: 20px;
+            animation: fadeInUp 1.5s ease-in-out;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+            font-size: 16px;
+            word-wrap: break-word;
+        }
+
+        th {
+            background-color: #0073e6;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            background-color: #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background-color: #0073e6;
+            width: 0;
+            transition: width 0.5s ease-in-out;
+        }
+
+        /* Animations */
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Fireworks */
+        .fireworks {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .firework {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: white;
+            border-radius: 50%;
+            animation: explode 1s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(3);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <h1>Order Status</h1>
+        <a href="/student_dashboard">Back to Dashboard</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h2>Your Orders</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Total Amount</th>
+                    <th>Order Date</th>
+                    <th>Status</th>
+                    <th>Progress</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% orders.forEach(order => { %>
+                <tr class="<%= order.status === 'ready to collect' ? 'ready-to-collect' : '' %>">
+                    <td><%= order.order_id %></td>
+                    <td>£<%= order.total_amount %></td>
+                    <td><%= new Date(order.order_date).toLocaleString('en-GB', { timeZone: 'UTC', hour12: false }).replace(/ GMT.*$/, '') %></td>
+                    <td><%= order.status %></td>
+                    <td>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" data-status="<%= order.status %>"></div>
+                        </div>
+                    </td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Fireworks -->
+    <div class="fireworks" id="fireworks"></div>
+
+    <script>
+        // Function to add animation to table rows
+        document.addEventListener('DOMContentLoaded', () => {
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach((row, index) => {
+                row.style.animation = `fadeInUp 0.5s ease-in-out ${index * 0.1}s forwards`;
+            });
+
+            // Check if any order status is 'ready to collect'
+            const readyToCollectRows = document.querySelectorAll('.ready-to-collect');
+            if (readyToCollectRows.length > 0) {
+                triggerFireworks();
+            }
+
+            // Update progress bars based on order status
+            const progressBars = document.querySelectorAll('.progress-bar');
+            progressBars.forEach(bar => {
+                const status = bar.getAttribute('data-status');
+                if (status === 'received') {
+                    bar.style.width = '33%';
+                } else if (status === 'in progress') {
+                    bar.style.width = '66%';
+                } else if (status === 'ready to collect') {
+                    bar.style.width = '100%';
+                }
+            });
+        });
+
+        // Fireworks animation
+        function triggerFireworks() {
+            const fireworksContainer = document.getElementById('fireworks');
+
+            for (let i = 0; i < 5; i++) {
+                const firework = document.createElement('div');
+                firework.className = 'firework';
+                fireworksContainer.appendChild(firework);
+            }
+
+            setInterval(() => {
+                const fireworks = document.querySelectorAll('.firework');
+                fireworks.forEach(firework => {
+                    firework.style.left = `${Math.random() * 100}%`;
+                    firework.style.animation = `firework 1s ease-in-out`;
+                    setTimeout(() => {
+                        firework.style.animation = 'none';
+                    }, 1000);
+                });
+            }, 2000);
+        }
+    </script>
+
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #fireworks {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .firework {
+            position: absolute;
+            bottom: 0;
+            width: 5px;
+            height: 5px;
+            background-color: #ffcc00;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #ffcc00, 0 0 20px #ffcc00, 0 0 30px #ffcc00;
+        }
+
+        @keyframes firework {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh);
+                opacity: 0;
+            }
+        }
+    </style>
+</body>
+</html>

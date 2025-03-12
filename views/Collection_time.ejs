@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Update Collection Times</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .container {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      width: 80%;
+      max-width: 800px;
+      margin-top: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #0073e6;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #0073e6;
+      box-shadow: 0 0 5px rgba(0, 115, 230, 0.5);
+    }
+
+    .form-group button {
+      background-color: #0073e6;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .form-group button:hover {
+      background-color: #005bb5;
+    }
+
+    .form-group button:active {
+      background-color: #003f7f;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Update Collection Times</h2>
+    <form id="update-times-form" action="/update-collection-times" method="POST">
+      <div class="form-group">
+        <label for="collection-times">Collection Times (comma-separated, in HH:MM format):</label>
+        <input type="text" id="collection-times" name="collectionTimes" placeholder="e.g., 09:00, 09:30, 10:00">
+      </div>
+      <div class="form-group">
+        <button type="submit">Update Times</button>
+      </div>
+    </form>
+  </div>
+
+  <script src="/js/StudentStaff.js"></script>
+</body>
+</html>
